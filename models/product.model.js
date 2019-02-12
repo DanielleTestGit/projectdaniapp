@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let ProductSchema = new Schema({
-    name: {type: String, required: true, max: 100},
+const ProductSchema = new Schema({
+    name: {type: String, required: true, maxlength: 150, minlength: 5},
     price: {type: Number, required: true},
-    description: {type: String, required: false, max: 500},
+    description: {type: String, required: true, maxlength: 500, minlength: 10},
 });
 
 
