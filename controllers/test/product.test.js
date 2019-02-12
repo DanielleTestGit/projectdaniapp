@@ -100,15 +100,12 @@ describe('Test Product APIs', () => {
                 return request(productDeleteOption)
                 .then((responseDelete) => {
                     console.log('TEST API Delete>>> ', responseDelete);
-                    
                     expect(responseDelete).toContain("Deleted successfully!");
                     return null;
                 })
             })
         })
-        
     })
-   
 })
         
   
