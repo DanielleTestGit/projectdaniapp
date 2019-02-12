@@ -25,40 +25,86 @@ describe('Test Product APIs', () => {
     })
 
     test('Find One product', () => {
-
-        const productFindOption = {
-            method: 'GET',
-            uri: 'http://localhost:1234/products/5c5db8c45aed5006b6eb6ad7',
-            json: true
+        let newNameFind = Math.random().toString(36).replace(/[^a-z]+/g, '');
+        const productCreateToFindOption = {
+            method: 'POST',
+            uri: 'http://localhost:1234/products/create',
+            json: true,
+            body: {
+                "name":newNameFind,
+                "price":"3",
+                "description":"Test Save API using Jest"
+            }
           };
         
-        return request(productFindOption)
-        .then((responseFind) => {
-            console.log('TEST API Find >>> ', responseFind);
-            expect(responseFind.name).toContain('margarida');
-            expect(responseFind.price).toBe(10);
-            return null;
+        return request(productCreateToFindOption)
+        .then((responseCreateToFind) => {
+            console.log('TEST API Create to Find >>> ', responseCreateToFind);
+
+            expect(responseCreateToFind.name).toContain(newNameFind);
+            const productFindOption = {
+                method: 'GET',
+                uri: 'http://localhost:1234/products/'+responseCreateToFind._id,
+                json: true
+              };
+            
+            return request(productFindOption)
+            .then((responseFind) => {
+                console.log('TEST API Find  >>> ', responseFind);
+                expect(responseFind.name).toContain(newNameFind);
+                expect(responseFind.price).toBe(3);
+                return null;
+            })
         })
     })
 
     test('Update a product', () => {
-        const productUpdateOption = {
-            method: 'PUT',
-            uri: 'http://localhost:1234/products/5c5db83d0d5a1106b268eab8/update',
+        let newNameUpdate = Math.random().toString(36).replace(/[^a-z]+/g, '');
+        const productCreateToUpdateOption = {
+            method: 'POST',
+            uri: 'http://localhost:1234/products/create',
             json: true,
             body: {
-                "name":"UpdateName",
+                "name":"rosas",
                 "price":"3",
-                "description":"Test Update API using Jest"
+                "description":"Test Save API using Jest"
             }
           };
         
-        return request(productUpdateOption)
-        .then((responseUpdate) => {
-            console.log('TEST API Update >>> ', responseUpdate);
+        return request(productCreateToUpdateOption)
+        .then((responseCreateToUpdate) => {
+            console.log('TEST API Create to Find >>> ', responseCreateToUpdate);
+
+            expect(responseCreateToUpdate.name).toContain("rosas");
+            const productUpdateOption = {
+                method: 'PUT',
+                uri: 'http://localhost:1234/products/'+responseCreateToUpdate._id+'/update',
+                json: true,
+                body: {
+                    "name":newNameUpdate,
+                    "price":"3",
+                    "description":"Test Update API using Jest"
+                }
+            };
             
-            expect(responseUpdate.name).toContain("UpdateName");
-            return null;
+            return request(productUpdateOption)
+            .then((responseUpdate) => {
+                console.log('TEST API Update >>> ', responseUpdate);
+                expect(responseUpdate).toContain('Update succesfully!');
+                const productFindUpdateOption = {
+                    method: 'GET',
+                    uri: 'http://localhost:1234/products/'+responseCreateToUpdate._id,
+                    json: true
+                  };
+                
+                return request(productFindUpdateOption)
+                .then((responseFindUpdate) => {
+                    console.log('TEST API Find Updated Product >>> ', responseFindUpdate);
+                    expect(responseFindUpdate.name).toContain(newNameUpdate);
+                    expect(responseFindUpdate.price).toBe(3);
+                    return null;
+                })
+            })
         })
     })
 
